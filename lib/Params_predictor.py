@@ -57,6 +57,9 @@ def get_predictor_params(args):
     elif args.model == 'OpenCity':
         from model.OpenCity.args import parse_args
         args_predictor = parse_args(parser_pred, args)
+    elif args.model == 'CityMoE':
+        from model.CityMoE.args import parse_args
+        args_predictor = parse_args(parser_pred, args)
     else:
         raise ValueError
 

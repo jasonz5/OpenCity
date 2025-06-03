@@ -202,17 +202,18 @@ pip install -r requirements.txt
 
 #### 3.2. Pre-training <a href='#all_catelogue'>[Back to Top]</a>
 
-* To pretrain the OpenCity model with different configurations, you can execute the Run.py code. There are some examples:
+* To pretrain the CityMoE model with different configurations, you can execute the Run.py code. There are some examples:
 ```
-# OpenCity-plus
-python Run.py -mode pretrain -model OpenCity -save_pretrain_path OpenCity-plus2.0.pth -batch_size 4 --embed_dim 512 --skip_dim 512 --enc_depth 6
+# CityMoE-plus
+python Run.py -mode pretrain -model CityMoE -save_pretrain_path CityMoE-plus.pth -batch_size 8 --embed_dim 512 --skip_dim 512 --enc_depth 6
 
-# OpenCity-base
-python Run.py -mode pretrain -model OpenCity -save_pretrain_path OpenCity-base2.0.pth -batch_size 8 --embed_dim 256 --skip_dim 256 --enc_depth 3
+# CityMoE-base
+python Run.py -mode pretrain -model CityMoE -save_pretrain_path CityMoE-base.pth -batch_size 8 --embed_dim 256 --skip_dim 256 --enc_depth 3
 
-# OpenCity-mini
-python Run.py -mode pretrain -model OpenCity -save_pretrain_path OpenCity-mini2.0.pth -batch_size 16 --embed_dim 128 --skip_dim 128 --enc_depth 3
-
+# CityMoE-mini
+python Run.py -mode pretrain -model CityMoE -save_pretrain_path CityMoE-mini.pth -batch_size 16 --embed_dim 128 --skip_dim 128 --enc_depth 3
+python Run.py -mode pretrain -model CityMoE -save_pretrain_path CityMoE-mini.pth -batch_size 32 --embed_dim 128 --skip_dim 128 --enc_depth 3
+python Run.py -mode pretrain -model CityMoE -save_pretrain_path CityMoE-mini-woMoE.pth -batch_size 64 --embed_dim 128 --skip_dim 128 --enc_depth 3
 ```
 
 * Parameter setting instructions. The parameter settings consist of two parts: the pretrain config and other configs. To avoid any confusion arising from potential overlapping parameter names, we employ a hyphen (-) to specify the parameters of pretrain config and use a double hyphen (--) to specify the parameters of other configs. Please note that if two parameters have the same name, **the settings of the latter can override those of the former.**
@@ -227,6 +228,14 @@ python Run.py -mode pretrain -model OpenCity -save_pretrain_path OpenCity-mini2.
 ```
 # Use OpenCity-plus to evaluate, please use only one dataset to test (e.g. dataset_use = ['PEMS07M'] in pretrain.config).
 python Run.py -mode test -model OpenCity -load_pretrain_path OpenCity-plus.pth -batch_size 2 --embed_dim 512 --skip_dim 512 --enc_depth 6
+python Run.py -mode test -model OpenCity -load_pretrain_path OpenCity-base.pth -batch_size 2 --embed_dim 256 --skip_dim 256 --enc_depth 3
+python Run.py -mode test -model OpenCity -load_pretrain_path OpenCity-mini.pth -batch_size 2 --embed_dim 128 --skip_dim 128 --enc_depth 3
+```
+```
+# Use CityMoE-plus to evaluate, please use only one dataset to test (e.g. dataset_use = ['PEMS07M'] in pretrain.config).
+python Run.py -mode test -model CityMoE -load_pretrain_path CityMoE-plus.pth -batch_size 2 --embed_dim 512 --skip_dim 512 --enc_depth 6
+python Run.py -mode test -model CityMoE -load_pretrain_path CityMoE-base.pth -batch_size 2 --embed_dim 256 --skip_dim 256 --enc_depth 3
+python Run.py -mode test -model CityMoE -load_pretrain_path CityMoE-mini.pth -batch_size 2 --embed_dim 128 --skip_dim 128 --enc_depth 3
 ```
 
 * **Running Evaluation of other baselines**. You can Replace the model name or use ori mode to train and test. For example: 

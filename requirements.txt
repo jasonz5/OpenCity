@@ -1,6 +1,7 @@
-fastdtw
+# fastdtw
 numpy
 pandas
 scipy
 tqdm
 tslearn
+tables

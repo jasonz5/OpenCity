@@ -11,7 +11,7 @@ import torch
 import copy
 
 def load_rel_2(adj_mx, args, dataset):
-    directory = f'../data/OpenCity/{dataset}'
+    directory = f'../data/CityMoE/{dataset}'
     if not os.path.exists(directory):
         os.makedirs(directory)
     filename = f'{dataset}_sh_mx.npy'
@@ -27,7 +27,7 @@ def load_rel_2(adj_mx, args, dataset):
 
 def parse_args(parser, args_base):
     # get configuration
-    config_file = '../conf/OpenCity/OpenCity.conf'
+    config_file = '../conf/CityMoE/CityMoE.conf'
     config = configparser.ConfigParser()
     config.read(config_file)
 
@@ -39,21 +39,21 @@ def parse_args(parser, args_base):
     parser.add_argument('--skip_dim', type=int, default=config['model']['skip_dim'])
     parser.add_argument('--lape_dim', type=int, default=config['model']['lape_dim'])
 
-    parser.add_argument('--geo_num_heads', type=int, default=config['model']['geo_num_heads'])
-    parser.add_argument('--sem_num_heads', type=int, default=config['model']['sem_num_heads'])
-    parser.add_argument('--tc_num_heads', type=int, default=config['model']['tc_num_heads'])
     parser.add_argument('--t_num_heads', type=int, default=config['model']['t_num_heads'])
     parser.add_argument('--mlp_ratio', type=int, default=config['model']['mlp_ratio'])
     parser.add_argument('--qkv_bias', type=eval, default=config['model']['qkv_bias'])
     parser.add_argument('--drop', type=float, default=config['model']['drop'])
     parser.add_argument('--attn_drop', type=float, default=config['model']['attn_drop'])
     parser.add_argument('--drop_path', type=float, default=config['model']['drop_path'])
-    parser.add_argument('--s_attn_size', type=int, default=config['model']['s_attn_size'])
-    parser.add_argument('--t_attn_size', type=int, default=config['model']['t_attn_size'])
     parser.add_argument('--enc_depth', type=int, default=config['model']['enc_depth'])
     parser.add_argument('--type_ln', type=str, default=config['model']['type_ln'])
     parser.add_argument('--type_short_path', type=str, default=config['model']['type_short_path'])
     parser.add_argument('--far_mask_delta', type=int, default=config['model']['far_mask_delta'])
+    parser.add_argument('--mlp_use_dense', type=eval, default=config['model']['mlp_use_dense'])
+    parser.add_argument('--num_experts_per_tok', type=int, default=config['model']['num_experts_per_tok'])
+    parser.add_argument('--num_experts', type=int, default=config['model']['num_experts'])
+    parser.add_argument('--apply_aux_loss', type=eval, default=config['model']['apply_aux_loss'])
+    parser.add_argument('--router_aux_loss_factor', type=float, default=config['model']['router_aux_loss_factor'])
     # train
     parser.add_argument('--seed', type=int, default=config['train']['seed'])
     parser.add_argument('--seed_mode', type=eval, default=config['train']['seed_mode'])

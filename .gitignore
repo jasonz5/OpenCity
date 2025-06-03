@@ -1,0 +1,9 @@
+__pycache__
+**/__pycache__/
+
+data/*
+!data/*.md
+!data/*.py
+
+model_weights/*
+!model_weights/*.md

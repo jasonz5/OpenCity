@@ -1,0 +1,4 @@
+- 在cursor中, 加入loss(pred, 均衡loss, 总loss)的记录日志，基于日志去做后续判断
+- 创造俩个模型版本
+    - CityMoE: 时空建模为 Temporal-Attention + Spatial-GCN + CityMoE
+    - CityST: 时空建模为 Temporal-Attention + Spatial-Attention

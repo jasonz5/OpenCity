@@ -88,10 +88,13 @@ class Trainer(object):
         for inputs, targets in self.train_dataloader:
             inputs, targets = inputs.squeeze(0).to(self.args.device), targets.squeeze(0).to(self.args.device)
             select_dataset = get_key_from_value(self.num_nodes_dict, inputs.shape[2])
-            out = self.model(inputs, targets, select_dataset, batch_seen=None)
+            out, router_aux_loss = self.model(inputs, targets, select_dataset, batch_seen=None)
             self.optimizer.zero_grad()
             loss_pred = self.loss(out, targets[..., :self.args.output_dim], self.scaler_dict[select_dataset])
             loss = loss_pred
+            if router_aux_loss:     
+                router_aux_loss = router_aux_loss.to(loss_pred.device)
+                loss += router_aux_loss
             loss.backward()
 
             # add max grad clipping
@@ -123,10 +126,13 @@ class Trainer(object):
             for inputs, targets in self.val_dataloader:
                 inputs, targets = inputs.squeeze(0).to(self.args.device), targets.squeeze(0).to(self.args.device)
                 select_dataset = get_key_from_value(self.num_nodes_dict, inputs.shape[2])
-                out = self.model(inputs, targets, select_dataset, batch_seen=None)
+                out, router_aux_loss = self.model(inputs, targets, select_dataset, batch_seen=None)
                 loss_pred = self.loss(out, targets[..., 0:self.args.output_dim], self.scaler_dict[select_dataset])
                 if not torch.isnan(loss_pred):
                     total_val_loss += loss_pred.item()
+                # if router_aux_loss:     
+                #     router_aux_loss = router_aux_loss.to(total_val_loss.device)
+                #     total_val_loss += router_aux_loss
                 val_loss = total_val_loss / len(self.val_dataloader)
         self.logger.info('**********Val Epoch {}: average Loss: {:.6f}'.format(epoch, val_loss))
         return val_loss
@@ -152,7 +158,7 @@ class Trainer(object):
             for inputs, targets in test_dataloader:
                 inputs, targets = inputs.squeeze(0).to(args.device), targets.squeeze(0).to(args.device)
                 select_dataset = get_key_from_value(args.num_nodes_dict, inputs.shape[2])
-                output = model(inputs, targets, select_dataset, batch_seen=None)
+                output, _ = model(inputs, targets, select_dataset, batch_seen=None)
                 if args.real_value == False:
                     output = scaler_dict[select_dataset].inverse_transform(output)
                     y_lbl = scaler_dict[select_dataset].inverse_transform(targets[..., :args.output_dim])
@@ -166,7 +172,7 @@ class Trainer(object):
                 total_count += mae_count
                 total_mape_count += mape_count
                 total_batch += len(y_lbl)
-                if args.model == 'OpenCity':
+                if args.model == 'OpenCity' or args.model == 'CityMoE':
                     print(total_batch, batch_mae, batch_rmse, batch_mape, total_count, total_mape_count)
         mae /= total_count
         rmse = (rmse / total_count) ** 0.5
